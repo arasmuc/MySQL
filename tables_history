@@ -1,0 +1,7 @@
+select ticket.tn, ticket.title, ticket.change_time,ticket_history.state_id
+from ticket, ticket_history, users
+where ticket.id=ticket_history.ticket_id;
+and ticket_history.owner_id=users.id
+and ticket_history.history_type_id in (8,15)
+and ticket_history.state_id not in (2, 3, 5, 9, 17)
+order by ticket.change_time asc;
