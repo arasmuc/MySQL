@@ -1,8 +1,12 @@
-select distinct(ticket.tn),substring(ticket.title,1,70), ticket.change_time,ticket_history.state_id,
-ticket_history.history_type_id,ticket_history.owner_id, users.last_name as owner
-from ticket, ticket_history, users
-where ticket.id=ticket_history.ticket_id 
-and (ticket_history.history_type_id=8 or ticket_history.history_type_id=15)
-and ticket_history.owner_id=users.id
-and ticket_history.state_id not in (2, 3, 5, 9, 17)
-group by ticket.tn order by ticket.change_time asc;
+select ticket.tn as number ,substring(ticket.title,1,45) as subject, 
+substring(ticket.change_time,1,10) as last_update, 
+ticket_state.name as state, ticket_type.name as type, 
+users.login as owner, substring(queue.name,1,29) as queue    
+from ticket, ticket_type, ticket_state, users, queue
+where 
+ticket.type_id=ticket_type.id 
+and ticket.queue_id=queue.id
+and ticket.ticket_state_id=ticket_state.id
+and ticket.user_id=users.id
+and  ticket.ticket_state_id not in (2, 3, 5, 9, 17)
+and queue.id not in (3) order by ticket.change_time asc;
