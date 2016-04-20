@@ -1,0 +1,8 @@
+/usr/bin/mysql -e 'select ticket.tn ,ticket.title as title, ticket.change_time as last_update, 
+ticket_state.name as state, ticket_type.name as type, users.login as owner,queue.name as queue from ticket, 
+ticket_type, ticket_state, users, queue 
+where 
+ticket.type_id=ticket_type.id and ticket.queue_id=queue.id and 
+ticket.ticket_state_id=ticket_state.id and ticket.user_id=users.id 
+and  ticket.ticket_state_id not in (2, 3, 5, 9, 17) 
+and queue.id not in (3) order by ticket.change_time asc' | sed 's/\t\t\t/,/g' > /var/www/html/stats/all_tickets_last_updates.csv
