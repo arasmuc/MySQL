@@ -1,0 +1,17 @@
+select  ticket.tn, ticket.title as title, substring(ticket.change_time,1,10) as last_update, 
+ticket_state.name as state, ticket_type.name, users.login as owner,queue.name as queue,
+case when from_unixtime(ticket.until_time, '%Y-%m-%d') in ('1970-01-01') then 'No Pending' 
+else from_unixtime(ticket.until_time, '%Y-%m-%d') end "pending till"
+from ticket, ticket_type, ticket_state, users, queue, ticket_history,ticket_history_type
+where 
+ticket.type_id=ticket_type.id 
+and ticket_history.ticket_id=ticket.id
+and ticket_history.history_type_id=ticket_history_type.id
+and ticket.queue_id=queue.id
+and ticket.ticket_state_id=ticket_state.id
+and ticket.user_id=users.id
+and ticket.ticket_state_id not in (2, 3, 5, 9, 17)
+and queue.id not in (3)
+and ticket_history.history_type_id in (1,8,15)
+group by (ticket.tn) 
+order by ticket.change_time asc;
